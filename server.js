@@ -37,18 +37,18 @@ app.post('/signup',async (req,res)=>{
       {
           res.status(400).render('signup',{error:'Please Fill All Options'})
       }
+     
 
       const users =await user.create({
           username:req.body.username,
           name:req.body.name,
           password:req.body.password
       })
-      .then(()=>{
+
+       
+         // req.session.user=users.username;
       res.status(200).render('index')
-})
- .catch(()=>{
-     res.status(400).render('signup',{error:" Username already exist"})
- })
+
 })
 
 db.sync()
