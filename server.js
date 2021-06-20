@@ -23,6 +23,7 @@ app.use(expresSession({
     
 }))
 
+
 app.get('/',(req,res)=>{
     console.log(session.id)
     res.render('index')
@@ -31,6 +32,7 @@ app.get('/',(req,res)=>{
 app.get('/signup',(req,res)=>{
     res.render('signup')
 })
+
 
 app.post('/signup',async (req,res)=>{
     if ((!req.body.username) || (!req.body.name) || (!req.body.password))
@@ -46,9 +48,26 @@ app.post('/signup',async (req,res)=>{
       })
 
        
-         // req.session.user=users.username;
+     req.session.user=users.username;
       res.status(200).render('index')
 
+})
+
+
+app.get('/login',async function(req,res){
+     if(req.session.user)
+     {
+         res.redirect('/profile');
+     }
+     const users=user.findOne({where:{username:req.body.username}})
+     if(!users)
+     {
+         res.status(404).render('login',{error:'Invalid Username'})
+     }
+     if(users.password===req.body.password)
+       res.status(401).render('login',{error:"Please Enter Correct Password"})
+
+    res.status(200).render('profile')
 })
 
 db.sync()
